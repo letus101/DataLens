@@ -1,0 +1,200 @@
+/* Modern Chart Display Theme */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #3b82f6;
+    --accent-color: #60a5fa;
+    --background-color: #f8fafc;
+    --card-background: #ffffff;
+    --text-color: #1e293b;
+    --error-gradient-start: #ef4444;
+    --error-gradient-end: #f87171;
+    --success-color: #059669;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    max-width: 1200px;
+    background: var(--card-background);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px var(--shadow-color),
+                0 2px 4px -2px var(--shadow-color);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Navigation */
+.nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--card-background);
+    border-bottom: 1px solid var(--background-color);
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.back-button i {
+    font-size: 1rem;
+}
+
+/* Chart Area */
+#plotly-chart {
+    width: 100%;
+    min-height: 500px;
+    padding: 1rem;
+}
+
+/* Error State */
+.error-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
+    text-align: center;
+    padding: 2rem;
+}
+
+#error-box {
+    background: linear-gradient(135deg,
+                var(--error-gradient-start) 0%,
+                var(--error-gradient-end) 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    color: white;
+    box-shadow: 0 4px 6px -1px var(--shadow-color),
+                0 2px 4px -2px var(--shadow-color);
+}
+
+.error-face {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-eyes {
+    display: flex;
+    gap: 1rem;
+}
+
+.error-eye {
+    width: 8px;
+    height: 8px;
+    background: var(--text-color);
+    border-radius: 50%;
+}
+
+.error-mouth {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--text-color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: 15px;
+}
+
+.error-message {
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.error-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: white;
+    color: var(--error-gradient-start);
+    border: none;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.error-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px var(--shadow-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .chart-container {
+        border-radius: 0.5rem;
+    }
+
+    #plotly-chart {
+        min-height: 300px;
+    }
+
+    .error-container {
+        padding: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chart-container, .error-container {
+    animation: fadeIn 0.5s ease-out forwards;
+}

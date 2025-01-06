@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Uniform Distribution</title>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css"
+            href="{% static 'css/lois.css' %}">
+
+        {% endblock %}
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <a href="{% url 'app' %}" class="back-button " >
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <h1 style="text-align: center;">Uniform Distribution</h1><div class="theory-section">
+                    <h2 class="theory-title">Théorie</h2>
+                    <p>La loi uniforme est la distribution la plus simple où chaque valeur dans un intervalle [a,b] a la même probabilité d'apparition.</p>
+
+                    <div class="formula">
+                        <p>Pour une variable aléatoire X suivant une loi uniforme sur [a,b] :</p>
+                        <p>Fonction de densité :</p>
+                        <p>\[ f(x) = \begin{cases}
+                        \frac{1}{b-a} & \text{pour } x \in [a,b] \\
+                        0 & \text{sinon}
+                        \end{cases} \]</p>
+                        <p>Fonction de répartition :</p>
+                        <p>\[ F(x) = \begin{cases}
+                        0 & \text{pour } x < a \\
+                        \frac{x-a}{b-a} & \text{pour } x \in [a,b] \\
+                        1 & \text{pour } x > b
+                        \end{cases} \]</p>
+                    </div>
+
+                    <h3>Caractéristiques :</h3>
+                    <ul>
+                        <li>Espérance : E(X) = \(\frac{a+b}{2}\)</li>
+                        <li>Variance : V(X) = \(\frac{(b-a)^2}{12}\)</li>
+                        <li>Écart-type : σ = \(\frac{b-a}{\sqrt{12}}\)</li>
+                        <li>Médiane = \(\frac{a+b}{2}\)</li>
+                    </ul>
+
+                    <h3>Propriétés :</h3>
+                    <ul>
+                        <li>Distribution symétrique</li>
+                        <li>Densité constante sur l'intervalle</li>
+                        <li>Maximum d'entropie pour un intervalle borné</li>
+                    </ul>
+
+                    <h3>Applications :</h3>
+                    <ul>
+                        <li>Génération de nombres aléatoires</li>
+                        <li>Erreurs d'arrondi</li>
+                        <li>Temps d'attente aléatoire</li>
+                        <li>Position aléatoire dans un intervalle</li>
+                        <li>Simulations Monte Carlo</li>
+                    </ul>
+                </div>
+            <h1 style="text-align: center;">Uniforme Distribution</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Afficher le graphique</button>
+            </form>
+            {% if plot_data %}
+            <div>
+                <a href="data:image/png;base64,{{ plot_data }}" download="graphe_binomiale.png" class="download-link">
+                    <i class="fas fa-download"></i>Télécharger
+                </a>
+                <img src="data:image/png;base64,{{ plot_data }}" alt="Distribution Plot">
+            </div>
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Poisson Distribution</title>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css"
+            href="{% static 'css/lois.css' %}">
+        {% endblock %}
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <a href="{% url 'app' %}" class="back-button " >
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <div class="theory-section">
+                    <h2 class="theory-title">Théorie</h2>
+                    <p>La loi de Poisson modélise le nombre d'occurrences d'un événement rare dans un intervalle de temps ou d'espace donné.</p>
+
+                    <div class="formula">
+                        <p>Pour une variable aléatoire X suivant une loi de Poisson de paramètre λ :</p>
+                        <p>\[ P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!} \quad \text{pour } k \in \mathbb{N} \]</p>
+                        <p>Où :</p>
+                        <ul>
+                            <li>λ est le paramètre d'intensité (nombre moyen d'occurrences)</li>
+                            <li>k est le nombre d'occurrences</li>
+                            <li>e est la constante d'Euler (≈ 2.71828)</li>
+                        </ul>
+                    </div>
+
+                    <h3>Caractéristiques :</h3>
+                    <ul>
+                        <li>Espérance : E(X) = λ</li>
+                        <li>Variance : V(X) = λ</li>
+                        <li>Écart-type : σ = \(\sqrt{\lambda}\)</li>
+                    </ul>
+
+                    <h3>Propriétés :</h3>
+                    <ul>
+                        <li>Somme de variables de Poisson indépendantes suit une loi de Poisson</li>
+                        <li>Approximation de la loi binomiale quand n est grand et p petit</li>
+                        <li>Lien avec la loi exponentielle pour les temps d'attente</li>
+                    </ul>
+
+                    <h3>Applications :</h3>
+                    <ul>
+                        <li>Nombre d'appels téléphoniques par heure</li>
+                        <li>Nombre de défauts dans une production</li>
+                        <li>Nombre d'accidents par jour</li>
+                        <li>Mutations génétiques dans un segment d'ADN</li>
+                        <li>Files d'attente et théorie des files</li>
+                    </ul>
+                </div>
+            <h1 style="text-align: center;">Poisson Distribution</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Afficher le graphique</button>
+            </form>
+            {% if plot_data %}
+            <div>
+                <a href="data:image/png;base64,{{ plot_data }}" download="graphe_binomiale.png" class="download-link">
+                    <i class="fas fa-download"></i>Télécharger
+                </a>
+                <img src="data:image/png;base64,{{ plot_data }}" alt="Distribution Plot">
+            </div>
+            {% endif %}
+        </div>
+    </body>
+</html>

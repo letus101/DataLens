@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculs sur les valeurs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/calcules.css' %}">
+    <link href="{% static 'webfonts/all.min.css' %}" rel="stylesheet">
+    {% endblock %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'app' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i><span>Retour</span>
+        </a>
+        <h2 class="calculator-title">Statistiques Descriptives</h2>
+        <div class="theory-section">
+            <h3>Mesures de Tendance Centrale</h3>
+            <div class="formula">
+                <p>1. Moyenne Arithmétique :</p>
+                <p>\[ \bar{x} = \frac{1}{n}\sum_{i=1}^n x_i \]</p>
+                <p>2. Médiane :</p>
+                <p>- Pour n impair : \(x_{\frac{n+1}{2}}\)</p>
+                <p>- Pour n pair : \(\frac{x_{\frac{n}{2}} + x_{\frac{n}{2}+1}}{2}\)</p>
+                <p>3. Mode :</p>
+                <p>Valeur la plus fréquente dans l'ensemble de données</p>
+            </div>
+            <h3>Mesures de Dispersion</h3>
+            <div class="formula">
+                <p>1. Variance :</p>
+                <p>\[ \sigma^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \bar{x})^2 \]</p>
+                <p>2. Écart-type :</p>
+                <p>\[ \sigma = \sqrt{\frac{1}{n}\sum_{i=1}^n (x_i - \bar{x})^2} \]</p>
+                <p>3. Étendue :</p>
+                <p>\[ R = x_{max} - x_{min} \]</p>
+            </div>
+        </div>
+        <h1>Calculs sur les valeurs</h1>
+        <form method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <label for="valeurs">Liste de valeurs (séparées par des virgules "," ou point virgules ";" ) :</label>
+            <input type="text" id="valeurs" name="valeurs" placeholder="Ex: 10, 20, 30, 40" {% if form.valeurs.value %}value="{{ form.valeurs.value }}"{% endif %}>
+            <input type="submit" value="Calculer">
+        </form>
+        <script>
+            function validateForm() {
+                var valeursInput = document.getElementById("valeurs");
+                var valeurs = valeursInput.value.split(/[;,]+/);
+
+                for (var i = 0; i < valeurs.length; i++) {
+                    var valeur = valeurs[i].trim();
+
+                    if (valeur.includes(" ")) {
+                        alert("Erreur : Les nombres ne doivent pas contenir d'espaces. Ils doivent être séparés par des tirets (-) ou des virgules (,)");
+                        return false;
+                    }
+
+                    if (valeur.split('-').length > 2) {
+                        alert("Erreur : Les nombres ne doivent contenir qu'un seul tiret pour représenter une valeur négative.");
+                        return false;
+                    }
+
+                    if (valeur.indexOf('-') !== 0 && valeur.indexOf('-') !== -1) {
+                        alert("Erreur : Le tiret doit être au début d'un nombre pour représenter une valeur négative.");
+                        return false;
+                    }
+
+                    if (isNaN(parseFloat(valeur))) {
+                        alert("Erreur : Le champ 'valeurs' doit contenir une liste de valeurs numériques séparées par des tirets (-) ou des virgules (,)");
+                        return false;
+                    }
+                }
+                return true;
+            }
+        </script>
+        {% if mean is not None %}
+        <div class="results">
+            <h2>Résultats :</h2>
+            <p>Moyenne : {{ mean }}</p>
+            <p>Médiane : {{ median }}</p>
+            <p>Mode : {{ mode }}</p>
+            <p>Variance : {{ variance }}</p>
+            <p>Ecart-type : {{ stdev }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

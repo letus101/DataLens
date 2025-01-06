@@ -1,0 +1,121 @@
+/* Modern Educational Theme */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #3b82f6;
+    --accent-color: #60a5fa;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.main-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 3rem 2rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.header-content h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.header-content .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.tools {
+    padding: 2rem;
+}
+
+.tools__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tools__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.tools__item {
+    transition: transform 0.2s ease;
+}
+
+.tools__item:hover {
+    transform: translateY(-5px);
+}
+
+.tool-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease;
+}
+
+.tool-card:hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.tools__item__icon {
+    background-color: var(--background-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tools__item__icon img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.tool-card h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+    text-align: center;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 2rem 1rem;
+    }
+
+    .header-content h1 {
+        font-size: 2rem;
+    }
+
+    .tools {
+        padding: 1rem;
+    }
+
+    .tools__grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+}

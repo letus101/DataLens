@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcourir les données | Statistiques & Probabilités</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/visualiser.css' %}">
+    <link href="{% static 'webfonts/all.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="control-panel">
+            <div class="page-header">
+                <h2 class="page-title">Parcours des données</h2>
+                <a href="{% url 'app' %}" class="home-link">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+            </div>
+
+<form method="post" action="{% url 'parcourir_chart' %}" enctype="multipart/form-data" id="form_id">
+    {% csrf_token %}
+
+    {% if error_message %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>{{ error_message }}</span>
+        <button type="button" class="alert-close" onclick="this.parentElement.style.display='none';">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label class="form-label" for="parcourir_chart">Type de recherche</label>
+        <select id="parcourir_chart" name="parcourir_chart">
+            <option value="Nothing">Sélectionnez une option</option>
+            <option value="FindElem">Recherche d'un élément</option>
+            <option value="Slicing">Slicing</option>
+            <option value="GroupBy">Filtrer par</option>
+            <option value="GroupByMean">Grouper par Moyenne</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="col_name1">Colonne</label>
+        <select id="col_name1" name="col_name1">
+            {% for col in column_names %}
+                <option>{{ col }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-section" id="row-section">
+        <h3 class="section-title">Navigation par lignes</h3>
+
+        <div class="form-group">
+            <label class="form-label" for="parcourir_rows">Type de navigation</label>
+            <select id="parcourir_rows" name="parcourir_rows">
+                <option value="Nothing">Sélectionnez une option</option>
+                <option value="NbrOfRowsTop">Nombre de lignes depuis le début</option>
+                <option value="NbrOfRowsBottom">Nombre de lignes depuis la fin</option>
+                <option value="FromRowToRow">D'une ligne à une autre</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="row-number">
+            <label class="form-label" for="RowNumb">Numéro de ligne</label>
+            <input type="number" id="RowNumb" name="RowNumb" min="0" max="{{ max_row }}" step="1"
+                   placeholder="Entrez un numéro de ligne">
+        </div>
+
+        <div class="form-group" id="head-group">
+            <label class="form-label" for="Head">Nombre de lignes du début</label>
+            <input type="number" id="Head" name="Head" min="0" max="{{ max_row }}" step="1"
+                   placeholder="Nombre de lignes à afficher">
+        </div>
+
+        <div class="form-group" id="tail-group">
+            <label class="form-label" for="Tail">Nombre de lignes de la fin</label>
+            <input type="number" id="Tail" name="Tail" min="0" max="{{ max_row }}" step="1"
+                   placeholder="Nombre de lignes à afficher">
+        </div>
+
+        <div class="form-group" id="range-group">
+            <label class="form-label" for="FromRowNumb">De la ligne</label>
+            <input type="number" id="FromRowNumb" name="FromRowNumb" min="0" max="{{ max_row }}" step="1"
+                   placeholder="Ligne de début">
+
+            <label class="form-label" for="ToRowNumb">À la ligne</label>
+            <input type="number" id="ToRowNumb" name="ToRowNumb" min="0" max="{{ max_row }}" step="1"
+                   placeholder="Ligne de fin">
+        </div>
+    </div>
+
+    <div class="form-section" id="column-section">
+        <h3 class="section-title">Sélection des colonnes</h3>
+        <div class="checkbox-group">
+            {% for col in column_names %}
+                <div class="checkbox-item">
+                    <input type="checkbox" name="selected_columns" value="{{ col }}" id="{{ col }}">
+                    <label for="{{ col }}">{{ col }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-section" id="filter-section">
+        <h3 class="section-title">Filtrage des données</h3>
+
+        <div class="form-group">
+            <label class="form-label" for="numeric_column">Colonne numérique</label>
+            <select name="numeric_column" id="numeric_column">
+                {% for col in column_names %}
+                    <option value="{{ col }}">{{ col }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="condition">Condition</label>
+            <select name="condition" id="condition">
+                <option value=">">Supérieur à</option>
+                <option value="<">Inférieur à</option>
+                <option value="=">Égal à</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="value">Valeur</label>
+            <input type="number" name="value" id="value" placeholder="Entrez une valeur">
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="button">Appliquer les filtres</button>
+    </div>
+</form>
+        </div>
+
+        <div class="data-display">
+            {% if df %}
+                <div class="table-container">
+                    <table>
+                        {{ df|safe }}
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // Hide all sections initially
+        $('#row-section, #column-section, #filter-section').hide();
+        $('#row-number, #head-group, #tail-group, #range-group').hide();
+
+        // Show/hide sections based on search type
+        $('#parcourir_chart').change(function() {
+            var selected = $(this).val();
+            if (selected === 'FindElem') {
+                $('#row-section').show();
+                $('#column-section, #filter-section').hide();
+            } else if (selected === 'Slicing') {
+                $('#row-section, #column-section').show();
+                $('#filter-section').hide();
+            } else if (selected === 'GroupBy') {
+                $('#filter-section').show();
+                $('#row-section, #column-section').hide();
+            } else {
+                $('#row-section, #column-section, #filter-section').hide();
+            }
+        });
+
+        // Show/hide row navigation inputs
+        $('#parcourir_rows').change(function() {
+            var selected = $(this).val();
+            $('#row-number, #head-group, #tail-group, #range-group').hide();
+            
+            if (selected === 'NbrOfRowsTop') {
+                $('#head-group').show();
+            } else if (selected === 'NbrOfRowsBottom') {
+                $('#tail-group').show();
+            } else if (selected === 'FromRowToRow') {
+                $('#range-group').show();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

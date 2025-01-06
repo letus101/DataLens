@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Import CSV - Statistiques & Probabilités{% endblock %}
+
+{% block content %}
+<div class="tools">
+    <div class="tools__container">
+        <div class="tools__grid">
+            <div class="tools__item">
+                <a href="{% url 'excel' %}" title="Excel">
+                    <div class="tools__item__icon">
+                        <img src="{% static 'img/excel.png' %}" alt="Excel" width="40" height="40"/>
+                    </div>
+                    <h3>Excel</h3>
+                </a>
+            </div>
+            
+            <div class="tools__item active">
+                <a href="{% url 'csv' %}" title="CSV">
+                    <div class="tools__item__icon">
+                        <img src="{% static 'img/csv.png' %}" alt="CSV" width="40" height="40"/>
+                    </div>
+                    <h3>CSV</h3>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="file-upload">
+            <form method="post" enctype="multipart/form-data" action="{% url 'csv' %}" id="fileUploadForm">
+                {% csrf_token %}
+                <div class="upload-area">
+                    <input type="file" name="file" id="id_file" accept=".csv">
+                </div>
+            
+                <div class="button-container">
+                    <button type="submit" id="visualiserButton" style="display: none;">Visualiser</button>
+                    <button type="button" id="parcourirButton" class="secondary" style="display: none;">Parcourir les données</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('id_file').addEventListener('change', function () {
+        document.getElementById('visualiserButton').style.display = 'inline-block';
+        document.getElementById('parcourirButton').style.display = 'inline-block';
+    });
+
+    document.getElementById('visualiserButton').addEventListener('click', function () {
+        window.location.href = "{% url 'visualiser_chart' %}";
+    });
+
+    document.getElementById('parcourirButton').addEventListener('click', function () {
+        window.location.href = "{% url 'parcourir_chart' %}";
+    });
+</script>
+{% endblock %}

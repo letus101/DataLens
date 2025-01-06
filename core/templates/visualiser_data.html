@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisation des données | Statistiques & Probabilités</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/visualiser.css' %}">
+    <link href="{% static 'webfonts/all.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="control-panel">
+            <div class="page-header">
+                <h2 class="page-title">Visualisation des données</h2>
+                <a href="{% url 'app' %}" class="home-link">
+                    <i class="fas fa-home"></i>
+                    <span>Accueil</span>
+                </a>
+            </div>
+
+            <form method="post" action="{% url 'visualiser_chart' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label" for="type_chart">Type de graphique</label>
+                    <select id="type_chart" name="type_chart">
+                        <option value="Nothing">Sélectionnez un type</option>
+                        <option value="Barplot">Diagramme en barres</option>
+                        <option value="histogram">Histogramme</option>
+                        <option value="piechart">Diagramme circulaire</option>
+                        <option value="scatterplot">Nuage de points</option>
+                        <option value="heatmap">Carte de chaleur</option>
+                        <option value="lineplot">Graphique linéaire</option>
+                        <option value="boxplot">Boîte à moustaches</option>
+                        <option value="violinplot">Diagramme en violon</option>
+                        <option value="kdeplot">Estimation de densité</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="col1-group">
+                    <label class="form-label" for="col_name1">Première variable</label>
+                    <select id="col_name1" name="col_name1">
+                        {% for col in column_names %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" id="col2-group">
+                    <label class="form-label" for="col_name2">Deuxième variable</label>
+                    <select id="col_name2" name="col_name2">
+                        {% for col in column_names %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button">Générer le graphique</button>
+                    <a href="{% url 'parcourir_chart' %}" class="button secondary">
+                        Parcourir les données
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="data-display">
+            {% if df %}
+                <div class="table-container">
+                    <table>
+                        {{ df|safe }}
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function(){
+        $('#col_name1, #col_name2').parent('.form-group').hide();
+
+        $('#type_chart').change(function(){
+            var selected_chart = $(this).val();
+            
+            if (selected_chart === 'scatterplot' || selected_chart === 'lineplot' || selected_chart === 'Barplot') {
+                $('#col_name1, #col_name2').parent('.form-group').show();
+            } else if (selected_chart === 'kdeplot' || selected_chart === 'histogram' || selected_chart === 'piechart' || selected_chart === 'boxplot' || selected_chart === 'violinplot') {
+                $('#col_name1').parent('.form-group').show();
+                $('#col_name2').parent('.form-group').hide();
+            } else if (selected_chart === 'heatmap' || selected_chart === 'Nothing') {
+                $('#col_name1, #col_name2').parent('.form-group').hide();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

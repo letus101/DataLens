@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Exponential Distribution</title>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css"
+            href="{% static 'css/lois.css' %}">
+
+        {% endblock %}
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    </head>
+    <body>
+
+
+        <div class="container">
+            <a href="{% url 'app' %}" class="back-button " >
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <div class="theory-section">
+                    <h2 class="theory-title">Théorie</h2>
+                    <p>La loi exponentielle est utilisée pour modéliser le temps d'attente jusqu'à la prochaine occurrence d'un événement dans un processus de Poisson.</p>
+
+                    <div class="formula">
+                        <p>Pour une variable aléatoire X suivant une loi exponentielle de paramètre λ :</p>
+                        <p>Fonction de densité :</p>
+                        <p>\[ f(x) = \lambda e^{-\lambda x} \quad \text{pour } x \geq 0 \]</p>
+                        <p>Fonction de répartition :</p>
+                        <p>\[ F(x) = 1 - e^{-\lambda x} \quad \text{pour } x \geq 0 \]</p>
+                        <p>Où λ > 0 est le paramètre d'intensité</p>
+                    </div>
+
+                    <h3>Caractéristiques :</h3>
+                    <ul>
+                        <li>Espérance : E(X) = 1/λ</li>
+                        <li>Variance : V(X) = 1/λ²</li>
+                        <li>Écart-type : σ = 1/λ</li>
+                        <li>Médiane : ln(2)/λ</li>
+                    </ul>
+
+                    <h3>Propriété d'absence de mémoire :</h3>
+                    <p>La loi exponentielle est la seule loi continue possédant la propriété de "perte de mémoire" :</p>
+                    <p>\[ P(X > s + t | X > s) = P(X > t) \]</p>
+
+                    <h3>Applications :</h3>
+                    <ul>
+                        <li>Durée de vie des composants électroniques</li>
+                        <li>Temps d'attente entre deux événements rares</li>
+                        <li>Analyse de fiabilité</li>
+                        <li>Files d'attente</li>
+                    </ul>
+                </div>
+            <h1 style="text-align: center;">Exponentielle Distribution</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Afficher le graphique</button>
+            </form>
+            {% if plot_data %}
+            <div>
+                <a href="data:image/png;base64,{{ plot_data }}" download="graphe_binomiale.png" class="download-link">
+                    <i class="fas fa-download"></i>Télécharger
+                </a>
+                <img src="data:image/png;base64,{{ plot_data }}" alt="Distribution Plot">
+            </div>
+            {% endif %}
+        </div>
+</html>

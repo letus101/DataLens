@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Normal Distribution</title>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css"
+            href="{% static 'css/lois.css' %}">
+        {% endblock %}
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <a href="{% url 'app' %}" class="back-button " >
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <div class="law-content">
+                <div class="theory-section">
+                    <h2 class="theory-title">Théorie</h2>
+                    <p>La loi normale, aussi appelée loi gaussienne, est une distribution symétrique en forme de cloche qui apparaît naturellement dans de nombreux phénomènes.</p>
+
+                    <div class="formula">
+                        <p>Pour une variable aléatoire X suivant une loi normale N(μ, σ²) :</p>
+                        <p>Fonction de densité :</p>
+                        <p>\[ f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]</p>
+                        <p>Où :</p>
+                        <ul>
+                            <li>μ est l'espérance (moyenne)</li>
+                            <li>σ est l'écart-type</li>
+                            <li>σ² est la variance</li>
+                        </ul>
+                    </div>
+
+                    <h3>Caractéristiques :</h3>
+                    <ul>
+                        <li>Espérance : E(X) = μ</li>
+                        <li>Variance : V(X) = σ²</li>
+                        <li>Symétrique autour de la moyenne</li>
+                        <li>68% des valeurs sont dans [μ-σ, μ+σ]</li>
+                        <li>95% des valeurs sont dans [μ-2σ, μ+2σ]</li>
+                        <li>99.7% des valeurs sont dans [μ-3σ, μ+3σ]</li>
+                    </ul>
+
+                    <h3>Loi normale centrée réduite :</h3>
+                    <p>Cas particulier où μ = 0 et σ = 1, notée N(0,1)</p>
+                    <p>Transformation : \[ Z = \frac{X-\mu}{\sigma} \sim N(0,1) \]</p>
+
+                    <h3>Applications :</h3>
+                    <ul>
+                        <li>Mesures physiques et erreurs de mesure</li>
+                        <li>Tailles et poids dans une population</li>
+                        <li>Tests statistiques</li>
+                        <li>Théorème central limite</li>
+                        <li>Finance et économie</li>
+                    </ul>
+                </div>
+            <h1 style="text-align: center;">Normale Distribution</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Afficher le graphique</button>
+            </form>
+            {% if plot_data %}
+            <div>
+                <a href="data:image/png;base64,{{ plot_data }}" download="graphe_binomiale.png" class="download-link">
+                    <i class="fas fa-download"></i>Télécharger
+                </a>
+                <img src="data:image/png;base64,{{ plot_data }}" alt="Distribution Plot">
+            </div>
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binomial Distribution</title>
+    {% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lois.css' %}">
+    {% endblock %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'app' %}" class="back-button " >
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        <div class="theory-section">
+                    <h2 class="theory-title">Théorie</h2>
+                    <p>La loi binomiale modélise le nombre de succès dans une série de n épreuves de Bernoulli indépendantes et identiques.</p>
+
+                    <div class="formula">
+                        <p>Pour une variable aléatoire X suivant une loi binomiale B(n,p) :</p>
+                        <p>\[ P(X = k) = \binom{n}{k} p^k (1-p)^{n-k} \]</p>
+                        <p>Où :</p>
+                        <ul>
+                            <li>n est le nombre d'épreuves</li>
+                            <li>p est la probabilité de succès à chaque épreuve</li>
+                            <li>k est le nombre de succès (0 ≤ k ≤ n)</li>
+                            <li>\(\binom{n}{k}\) est le coefficient binomial</li>
+                        </ul>
+                    </div>
+
+                    <h3>Caractéristiques :</h3>
+                    <ul>
+                        <li>Espérance : E(X) = np</li>
+                        <li>Variance : V(X) = np(1-p)</li>
+                        <li>Écart-type : σ = \(\sqrt{np(1-p)}\)</li>
+                    </ul>
+
+                    <h3>Applications :</h3>
+                    <ul>
+                        <li>Contrôle qualité</li>
+                        <li>Sondages et enquêtes</li>
+                        <li>Tests médicaux</li>
+                        <li>Analyses de risques</li>
+                    </ul>
+                </div>
+        <h1 style="text-align: center;">Binomial Distribution</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Afficher le graphique</button>
+        </form>
+        {% if plot_data %}
+        <div>
+            <a href="data:image/png;base64,{{ plot_data }}" download="graphe_binomiale.png" class="download-link">
+                <i class="fas fa-download"></i>Télécharger
+            </a>
+            <img src="data:image/png;base64,{{ plot_data }}" alt="Distribution Plot">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

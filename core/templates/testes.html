@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tests</title>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/testes.css' %}">
+        {% endblock %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    </head>
+    <body>
+        <div class="centered-container">
+            <div class="container">
+                <a href="{% url 'app' %}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <div class="theory-section">
+                    <h2>Concepts Fondamentaux</h2>
+                    <div class="concept-card">
+                        <h3>Tests d'Hypothèses</h3>
+                        <div class="formula">
+                            <p>1. Hypothèse Nulle (H₀) :</p>
+                            <p>Affirmation par défaut qu'il n'y a pas d'effet ou de différence</p>
+                            <p>2. Hypothèse Alternative (H₁) :</p>
+                            <p>Affirmation qu'il existe un effet ou une différence</p>
+                            <p>3. Niveau de Signification (α) :</p>
+                            <p>Seuil de probabilité pour rejeter H₀ (typiquement 0.05)</p>
+                        </div>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Types de Tests</h3>
+                        <ul>
+                            <li>Test Z (grands échantillons)</li>
+                            <li>Test t de Student (petits échantillons)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="border ms-2">
+                            <h4 class="text-center">Tests d'hypothèse</h4>
+                            <div class="ms-2">
+                                <input type="radio" id="zTest" name="test_type" value="zTest" class="radio-button">
+                                <label for="zTest" class="radio-label">Z-Test</label>
+                            </div>
+                            <div class="ms-2">
+                                <input type="radio" id="tTest" name="test_type" value="tTest" class="radio-button">
+                                <label for="tTest" class="radio-label">Independent Samples T-test</label>
+                            </div>
+                            <div class="ms-2">
+                                <input type="radio" id="tTest2" name="test_type" value="tTest2" class="radio-button">
+                                <label for="tTest2" class="radio-label">Paired Samples T-test</label>
+                            </div>
+                            <div class="ms-2">
+                                <input type="radio" id="linearRegression" name="test_type" value="linearRegression" class="radio-button">
+                                <label for="linearRegression" class="radio-label">Linear Regression</label>
+                            </div>
+                            <button type="button" class="btn ms-2" onclick="validateChoice()">Validate</button>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="border">
+                            <div id="parameterFields">
+                                <!-- Fields for t-Test 2-->
+                                <div id="tTestParams" style="display: none;">
+                                    <label for="tTestField1" class="label">Sample Mean X:</label>
+                                    <input type="text" id="tTestField1" name="tTestField1" class="input-field" placeholder="Enter sample mean for t-Test">
+                                    <br>
+                                    <label for="tTestField2" class="label">Sample Mean (bar{X}_2):</label>
+                                    <input type="text" id="tTestField2" name="tTestField2" class="input-field" placeholder="Enter sample mean for t-Test">
+                                    <br>
+                                    <label for="tTestS1" class="label">Sample Standard Deviation (s_1):</label>
+                                    <input type="text" id="tTestS1" name="tTestS1" class="input-field" placeholder="Enter sample standard deviation for t-Test">
+                                    <br>
+                                    <label for="tTestS2" class="label">Sample Standard Deviation (s_2):</label>
+                                    <input type="text" id="tTestS2" name="tTestS2" class="input-field" placeholder="Enter sample standard deviation for t-Test">
+                                    <br>
+                                    <label for="tTestN1" class="label">Sample Size (n_1):</label>
+                                    <input type="text" id="tTestN1" name="tTestN1" class="input-field" placeholder="Enter sample size for t-Test">
+                                    <br>
+                                    <label for="tTestN2" class="label">Sample Size (n_2):</label>
+                                    <input type="text" id="tTestN2" name="tTestN2" class="input-field" placeholder="Enter sample size for t-Test">
+                                    <br>
+                                    <label for="tTestSignificance" class="label">Significance Level (alpha):</label>
+                                    <input type="text" id="tTestSignificance" name="tTestSignificance" class="input-field" placeholder="Enter significance level">
+                                    <br>
+                                    <button type="button" class="btn ms-2" onclick="sendTTestFormula()">Send t-Test Formula</button>
+                                    <div id="tTestResults" class="results" style="display: none;">
+                                        <h5 class="result-title">Independent Samples T-test Results:</h5>
+                                        <p id="tTestResultText" class="result-value"></p>
+                                    </div>
+                                </div>
+                                <!-- Fields for Z-Test -->
+                                <div id="zTestParams" style="display: none;">
+                                    <label for="zTestField" class="label">Sample Mean (x̄):</label>
+                                    <input type="text" id="zTestField" name="zTestField" class="input-field" placeholder="Enter sample mean for Z-Test">
+                                    <br>
+                                    <label for="zTestmi" class="label">Population mean (μ):</label>
+                                    <input type="text" id="zTestmi" name="zTestmi" class="input-field" placeholder="Enter population mean for Z-Test">
+                                    <br>
+                                    <label for="zTestSigma" class="label">Population Standard Deviation (σ):</label>
+                                    <input type="text" id="zTestSigma" name="zTestSigma" class="input-field" placeholder="Enter population standard deviation for Z-Test">
+                                    <br>
+                                    <label for="zTestN" class="label">Sample Size (n):</label>
+                                    <input type="text" id="zTestN" name="zTestN" class="input-field" placeholder="Enter sample size for Z-Test">
+                                    <br>
+                                    <label for="zTestSignificance" class="label">Significance Level (α):</label>
+                                    <input type="text" id="zTestSignificance" name="zTestSignificance" class="input-field" placeholder="Enter significance level">
+                                    <br>
+                                    <button type="button" class="btn ms-2" onclick="sendZTestFormula()">Send Z-Test Formula</button>
+                                    <div id="zTestResults" class="results" style="display: none;">
+                                        <h5 class="result-title">Z-Test Results:</h5>
+                                        <p id="zTestResultText" class="result-value"></p>
+                                    </div>
+                                </div>
+                                <!-- Fields for t-Test 2-->
+                                <div id="tTestParams2" style="display: none;">
+                                    <label for="tTestFieldtest2" class="label">Sample Mean (x̄):</label>
+                                    <input type="text" id="tTestFieldtest2" name="tTestFieldtest2" class="input-field" placeholder="Enter sample mean for T-Test">
+                                    <br>
+                                    <label for="tTestmi2" class="label">Population mean (μ):</label>
+                                    <input type="text" id="tTestmi2" name="tTestmi2" class="input-field" placeholder="Enter population mean for t-Test">
+                                    <br>
+                                    <label for="tTestSigma2" class="label">Population Standard Deviation (σ):</label>
+                                    <input type="text" id="tTestSigma2" name="tTestSigma2" class="input-field" placeholder="Enter population standard deviation for t-Test">
+                                    <br>
+                                    <label for="testTestN2" class="label">Sample Size (n):</label>
+                                    <input type="text" id="testTestN2" name="testTestN2" class="input-field" placeholder="Enter sample size for t-Test">
+                                    <br>
+                                    <label for="tTestSignificance2" class="label">Significance Level (α):</label>
+                                    <input type="text" id="tTestSignificance2" name="tTestSignificance2" class="input-field" placeholder="Enter significance level">
+                                    <br>
+                                    <button type="button" class="btn ms-2" onclick="sendTTestFormula2()">Send T-Test Formula</button>
+                                    <div id="tTestResults2" class="results" style="display: none;">
+                                        <h5 class="result-title">Paired Samples T-test Results:</h5>
+                                        <p id="tTestResultText2" class="result-value"></p>
+                                    </div>
+                                </div>
+                                <!-- Fields for Linear Regression -->
+                                <div id="linearRegressionParams" style="display: none;">
+                                    <label for="linearRegressionX" class="label">Independent Variable (X):</label>
+                                    <input type="text" id="linearRegressionX" name="linearRegressionX" class="input-field" placeholder="Enter data for Linear Regression X (separated by spaces)">
+                                    <br>
+                                    <label for="linearRegressionY" class="label">Dependent Variable (Y):</label>
+                                    <input type="text" id="linearRegressionY" name="linearRegressionY" class="input-field" placeholder="Enter data for Linear Regression Y (separated by spaces)">
+                                    <br>
+                                    <button type="button" class="btn ms-2" onclick="sendLinearRegressionFormula()">Send Linear Regression Formula</button>
+                                    <div id="linearRegressionResults" class="results" style="display: none;">
+                                        <h5 class="result-title">Linear Regression Results:</h5>
+                                        <p id="linearRegressionResultText" class="result-value"></p>
+                                        <img id="linearRegressionResultImage" src="" alt="Linear Regression Result Image">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <script>
+    function validateChoice() {
+        var selectedTest = document.querySelector('input[name="test_type"]:checked');
+
+        if (selectedTest) {
+            hideAllParameterFields();
+
+            switch (selectedTest.value) {
+                case 'tTest':
+                    showElement('tTestParams');
+                    break;
+                case 'zTest':
+                    showElement('zTestParams');
+                    break;
+                case 'linearRegression':
+                    showElement('linearRegressionParams');
+                    break;
+                case 'tTest2':
+                    showElement('tTestParams2');
+                    break;
+
+
+            }
+        } else {
+            alert('Veuillez sélectionner un type de test ou de régression.');
+        }
+    }
+
+    function hideAllParameterFields() {
+        var parameterFields = document.getElementById('parameterFields').children;
+
+        for (var i = 0; i < parameterFields.length; i++) {
+            parameterFields[i].style.display = 'none';
+        }
+
+        // Masquer les résultats des tests précédents
+        hideResults('tTestResults');
+        hideResults('zTestResults');
+        hideResults('linearRegressionResults');
+        hideResults('tTestResults2');
+        // ... (Masquer les résultats d'autres tests si nécessaire) ...
+    }
+
+    function hideResults(resultId) {
+        var resultsDiv = document.getElementById(resultId);
+        resultsDiv.style.display = 'none';
+    }
+
+    function showElement(elementId) {
+        hideAllParameterFields();
+        document.getElementById(elementId).style.display = 'block';
+    }
+
+    function sendDataToBackend(testType, params) {
+        var url = '/test_traitement/';
+        var urlEncodedParams = new URLSearchParams(params).toString();
+
+        fetch(url + '?' + urlEncodedParams)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La réponse du réseau n\'est pas correcte');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+
+                var resultsDiv;
+                var resultText;
+
+                switch (testType) {
+                    case 'zTest':
+                        resultsDiv = 'zTestResults';
+                        resultText = 'zTestResultText';
+                        break;
+                    case 'linearRegression':
+                        resultsDiv = 'linearRegressionResults';
+                        resultText = 'linearRegressionResultText';
+                        break;
+                    case 'tTest':
+                        resultsDiv = 'tTestResults';
+                        resultText = 'tTestResultText';
+                        break;
+                    case 'tTest2':
+                        resultsDiv = 'tTestResults2';
+                        resultText = 'tTestResultText2';
+                        break;
+                }
+
+                showResults(resultsDiv, resultText, data);
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+    }
+
+    function showResults(resultsDiv, resultText, data) {
+    var resultsElement = document.getElementById(resultsDiv);
+    var resultTextElement = document.getElementById(resultText);
+
+    // Vérifier si l'élément existe avant d'accéder à ses propriétés
+    if (resultsElement && resultTextElement) {
+        resultsElement.style.display = 'block';
+
+        if (resultsDiv === 'linearRegressionResults') {
+            // Traiter spécifiquement les résultats de la régression linéaire
+            if (data.slope !== undefined && data.intercept !== undefined && data.image_path !== undefined) {
+                resultTextElement.innerHTML = `Results:
+                    <ul>
+                        <li>Slope: ${data.slope.toFixed(2)}</li>
+                        <li>Intercept: ${data.intercept.toFixed(2)}</li>
+                    </ul>`;
+                // Afficher l'image du graphique de régression
+                var imgElement = document.createElement('img');
+                imgElement.src = 'data:image/png;base64,' + data.image_path;
+                imgElement.alt = 'Linear Regression Result Image';
+
+                // Supprimer l'ancienne image si elle existe
+                var oldImgElement = document.getElementById('linearRegressionResultImage');
+                if (oldImgElement) {
+                    oldImgElement.remove();
+                }
+
+                // Ajouter la nouvelle image
+                imgElement.id = 'linearRegressionResultImage';
+                resultTextElement.appendChild(imgElement);
+            } else {
+                // Gérer le cas où certaines propriétés sont manquantes dans les données
+                resultTextElement.innerHTML = 'Linear regression data is incomplete or undefined.';
+            }
+        } else if (resultsDiv === 'tTestResults') {
+
+            console.log(`Showing results for ${resultsDiv}:`, data);
+            if (data.t_statistic !== undefined && data.p_value !== undefined && data.hypothesis_result !== undefined) {
+                resultTextElement.innerHTML = `Formula: ${data.formula}<br>Results:
+                    <ul>
+                        <li>t-Statistic: ${data.t_statistic.toFixed(2)}</li>
+                        <li>P-Value: ${data.p_value.toFixed(4)}</li>
+                    </ul>
+                Hypothesis Result: ${data.hypothesis_result}`;
+                console.log(`Results for ${resultsDiv} displayed:`, resultTextElement.innerHTML);
+
+            } else {
+                // Handle the case where some properties are missing in the data
+                resultTextElement.innerHTML = 't-Test data is incomplete or undefined.';
+            }
+
+         } else if (resultsDiv === 'tTestResults2') {
+    if (data.t_statistic !== undefined && data.p_value_two_sided !== undefined && data.hypothesis_result_two_sided !== undefined) {
+        resultTextElement.innerHTML = `Formula: ${data.formula}<br>Results:
+            <ul>
+                <li>T-Statistic: ${data.t_statistic.toFixed(2)}</li>
+                <li>P-Value (Two-Sided): ${data.p_value_two_sided.toFixed(4)}</li>
+            </ul>
+        Hypothesis Result:
+            <ul>
+                <li>Two-Sided: ${data.hypothesis_result_two_sided}</li>
+            </ul>`;
+    } else {
+        // Handle the case where some properties are missing in the data
+        resultTextElement.innerHTML = 'Test2 data is incomplete or undefined.';
+    }
+    document.getElementById('tTestResultText2').innerHTML = resultTextElement.innerHTML;
+}else {
+            if (data.z_statistic !== undefined && data.p_value_two_sided !== undefined && data.p_value_left !== undefined && data.p_value_right !== undefined && data.hypothesis_result_two_sided !== undefined && data.hypothesis_result_left !== undefined && data.hypothesis_result_right !== undefined) {
+                resultTextElement.innerHTML = `Formula: ${data.formula}<br>Results:
+                    <ul>
+                        <li>Z-Statistic: ${data.z_statistic.toFixed(2)}</li>
+                        <li>P-Value (Two-Sided): ${data.p_value_two_sided.toFixed(4)}</li>
+                        <li>P-Value (Left): ${data.p_value_left.toFixed(4)}</li>
+                        <li>P-Value (Right): ${data.p_value_right.toFixed(4)}</li>
+                    </ul>
+                Hypothesis Result:
+                    <ul>
+                        <li>Two-Sided: ${data.hypothesis_result_two_sided}</li>
+                        <li>Left: ${data.hypothesis_result_left}</li>
+                        <li>Right: ${data.hypothesis_result_right}</li>
+                    </ul>`;
+                    document.getElementById('tTestResultText').innerHTML = resultTextElement.innerHTML;
+
+            } else {
+                // Handle the case where some properties are missing in the data
+                resultTextElement.innerHTML = 'Test data is incomplete or undefined.';
+            }
+            document.getElementById('tTestResultText').innerHTML = resultTextElement.innerHTML;
+
+        }
+
+
+        // Display results in the HTML body directly
+        document.getElementById('zTestResultText').innerHTML = resultTextElement.innerHTML;
+    }
+}
+
+
+    function sendTTestFormula() {
+        var tTestField1 = getValue('tTestField1');
+        var tTestField2 = getValue('tTestField2');
+        var tTestS1 = getValue('tTestS1');
+        var tTestS2 = getValue('tTestS2');
+        var tTestN1 = getValue('tTestN1');
+        var tTestN2 = getValue('tTestN2');
+        var tTestSignificance = getValue('tTestSignificance');
+        if (isNaN(parseFloat(tTestField1)) || isNaN(parseFloat(tTestField2)) || isNaN(parseFloat(tTestS1)) || isNaN(parseInt(tTestS2)) || isNaN(parseFloat(tTestN1)) || isNaN(parseFloat(tTestN2)) || isNaN(parseFloat(tTestSignificance))) {
+            alert("Veuillez entrer des valeurs numériques valides pour les paramètres du T-test .");
+            return;
+        }
+        var params = {
+            testType: 'tTest',
+            tTestField1: tTestField1,
+            tTestField2: tTestField2,
+            tTestS1: tTestS1,
+            tTestS2: tTestS2,
+            tTestN1: tTestN1,
+            tTestN2: tTestN2,
+            tTestSignificance: tTestSignificance,
+        };
+
+        sendDataToBackend('tTest', params);
+    }
+
+    function sendZTestFormula() {
+        var zTestField = getValue('zTestField');
+        var zTestSigma = getValue('zTestSigma');
+        var zTestmi  = getValue('zTestmi');
+        var zTestN = getValue('zTestN');
+        var zTestSignificance = getValue('zTestSignificance');
+// Validation de la taille de l'échantillon
+    if (parseInt(zTestN) <= 30) {
+        alert("La taille de l'échantillon (n) doit être supérieure à 30 pour appliquer le test Z.");
+        return;
+    }
+
+    // Validation supplémentaire pour les autres éléments
+    if (isNaN(parseFloat(zTestField)) || isNaN(parseFloat(zTestSigma)) || isNaN(parseFloat(zTestmi)) || isNaN(parseInt(zTestN)) || isNaN(parseFloat(zTestSignificance))) {
+        alert("Veuillez entrer des valeurs numériques valides pour les paramètres du test Z.");
+        return;
+    }
+        var params = {
+            testType: 'zTest',
+            zTestField: zTestField,
+            zTestSigma: zTestSigma,
+            zTestmi:zTestmi,
+            zTestN: zTestN,
+            zTestSignificance: zTestSignificance,
+        };
+
+        sendDataToBackend('zTest', params);
+    }
+
+    function sendLinearRegressionFormula() {
+        var linearRegressionX = getValue('linearRegressionX');
+        var linearRegressionY = getValue('linearRegressionY');
+        if (isNaN(parseFloat(linearRegressionX)) || isNaN(parseFloat(linearRegressionY))) {
+            alert("Veuillez entrer des valeurs numériques valides pour les paramètres du régression linéaire.");
+            return;
+        }
+        var params = {
+            testType: 'linearRegression',
+            linearRegressionX: linearRegressionX,
+            linearRegressionY: linearRegressionY,
+        };
+
+        sendDataToBackend('linearRegression', params);
+    }
+
+    function sendTTestFormula2() {
+        var tTestField2 = getValue('tTestFieldtest2');
+        var tTestSigma2 = getValue('tTestSigma2');
+        var tTestmi2  = getValue('tTestmi2');
+        var  testTestN2 = getValue('testTestN2');
+        var tTestSignificance2 = getValue('tTestSignificance2');
+
+    if (parseInt(tTestN2) >= 30) {
+        alert("La taille de l'échantillon (n) doit être inférieur à 30 pour appliquer le test Z.");
+        return;
+    }
+
+    // Validation supplémentaire pour les autres éléments
+    if (isNaN(parseFloat(tTestField2)) || isNaN(parseFloat(tTestSigma2)) || isNaN(parseFloat(tTestmi2)) || isNaN(parseInt(testTestN2)) || isNaN(parseFloat(tTestSignificance2))) {
+        alert("Veuillez entrer des valeurs numériques valides pour les paramètres du T-test .");
+        return;
+    }
+
+
+        var params = {
+            testType: 'tTest2',
+            tTestField2: tTestField2,
+            tTestSigma2: tTestSigma2,
+            tTestmi2:tTestmi2,
+            testTestN2:  testTestN2,
+            tTestSignificance2:tTestSignificance2,
+        };
+
+        sendDataToBackend('tTest2', params);
+    }
+
+    function getValue(elementId) {
+        return document.getElementById(elementId).value;
+    }
+</script>
+
+        </body>
+    </html>

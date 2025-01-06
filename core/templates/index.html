@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        {% block styles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+        <link href="{% static 'webfonts/all.min.css' %}" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        {% endblock %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Statistiques & Probabilités | Plateforme d'Apprentissage</title>
+    </head>
+    <body class="lang-fr home">
+        <header class="main-header">
+            <div class="header-content">
+                <h1>Statistiques & Probabilités</h1>
+                <p class="subtitle">Votre plateforme d'apprentissage interactive pour la statistique et les probabilités</p>
+            </div>
+        </header>
+
+        <div class="tools">
+            <div class="tools__container">
+                <div class="tools__grid">
+                    <div class="tools__item">
+                        <a href="{% url 'excel' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/excel.png' %}" alt="Excel" width="40" height="40"/>
+                            </div>
+                            <h3>Excel</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'csv' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/csv.png' %}" alt="CSV" width="40" height="40"/>
+                            </div>
+                            <h3>CSV</h3>
+                        </a>
+                    </div>
+
+                    <div class="tools__item">
+                        <a href="{% url 'Binomiale' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/binomiale.png' %}" alt="Binomiale" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Binomiale</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Bernoulli' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/loi bernouilli.png' %}" alt="Bernoulli" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Bernoulli</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Uniforme' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/uniforme.png' %}" alt="Uniforme" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Uniforme</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Poisson' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/poisson.png' %}" alt="Poisson" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Poisson</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Exponentielle' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/expo.png' %}" alt="Exponentielle" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Exponentielle</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Normale' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/normal.png' %}" alt="Normale" width="40" height="40"/>
+                            </div>
+                            <h3>Loi Normale Continue</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'Calcules' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/lois.png' %}" alt="Calcules" width="40" height="40"/>
+                            </div>
+                            <h3>Calcules des mesures</h3>
+                        </a>
+                    </div>
+                    
+                    <div class="tools__item">
+                        <a href="{% url 'tests' %}" class="tool-card">
+                            <div class="tools__item__icon">
+                                <img src="{% static 'img/tests.jpeg' %}" alt="Tests" width="40" height="40"/>
+                            </div>
+                            <h3>Testes</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

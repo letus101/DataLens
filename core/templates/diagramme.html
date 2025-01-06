@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisation des données | Statistiques & Probabilités</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/diagramme.css' %}">
+</head>
+<body>
+    {% if chart %}
+        <div class="chart-container">
+            <div class="nav-header">
+                <button onclick="history.back()" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Retour</span>
+                </button>
+                <div class="chart-actions">
+                    <button onclick="downloadPlot()" class="back-button">
+                        <i class="fas fa-download"></i>
+                        <span>Télécharger</span>
+                    </button>
+                </div>
+            </div>
+            <div id="plotly-chart"></div>
+        </div>
+        <script>
+            var chartData = '{{ chart|safe }}';
+            var plotlyChart = JSON.parse(chartData);
+            
+            // Initialize the plot with a responsive layout
+            var layout = {
+                autosize: true,
+                margin: { t: 30, r: 30, l: 60, b: 60 },
+                font: {
+                    family: 'Poppins, sans-serif'
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                showlegend: true,
+                legend: {
+                    x: 0,
+                    y: 1,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: 'rgba(0,0,0,0.1)',
+                    borderwidth: 1
+                }
+            };
+
+            var config = {
+                responsive: true,
+                displayModeBar: true,
+                modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+                displaylogo: false
+            };
+
+            Plotly.newPlot('plotly-chart', plotlyChart, layout, config);
+
+            // Function to handle window resize
+            window.addEventListener('resize', function() {
+                Plotly.Plots.resize('plotly-chart');
+            });
+
+            // Function to download the plot
+            function downloadPlot() {
+                Plotly.downloadImage('plotly-chart', {
+                    format: 'png',
+                    filename: 'statistiques_plot',
+                    width: 1200,
+                    height: 800,
+                    scale: 2
+                });
+            }
+        </script>
+    {% else %}
+        <div class="error-container">
+            {% if error_message %}
+                <div id="error-box">
+                    <div class="error-face">
+                        <div class="error-eyes">
+                            <div class="error-eye"></div>
+                            <div class="error-eye"></div>
+                        </div>
+                        <div class="error-mouth"></div>
+                    </div>
+                    <div class="error-message">
+                        {{ error_message }}
+                    </div>
+                    <button onclick="history.back()" class="error-button">
+                        Réessayer
+                    </button>
+                </div>
+            {% else %}
+                <div id="error-box">
+                    <div class="error-message">
+                        Aucune donnée de diagramme disponible pour l'instant.
+                    </div>
+                    <button onclick="history.back()" class="error-button">
+                        Retour
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
