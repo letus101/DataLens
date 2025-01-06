@@ -1,6 +1,6 @@
 # Projet de Statistiques & Probabilités
 
-Ce projet est une application web développée avec Django qui permet de visualiser et d'analyser des données statistiques à partir de fichiers Excel, CSV et texte. Il propose également des outils pour effectuer des tests statistiques et des calculs de distributions.
+Ce projet est une application web développée avec Django qui permet de visualiser et d'analyser des données statistiques à partir de fichiers Excel, CSV . Il propose également des outils pour effectuer des tests statistiques et des calculs de distributions.
 
 ## Prérequis
 
